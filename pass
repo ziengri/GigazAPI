@@ -1,0 +1,3 @@
+9Co9anaTU72hDqzV mg
+find()//all string
+find().populate("user").exec()// вывести связаные записи
