@@ -8,6 +8,7 @@ import * as WorkerController from './controllers/workerController.js'
 import * as StorageController from './controllers/storageController.js'
 import * as BuildingController from './controllers/buildingController.js'
 import * as DeliveryController from './controllers/deliveryController.js'
+import checkAdmin from './utils/checkAdmin.js';
 
 
 
@@ -27,36 +28,41 @@ app.listen(PORT,(err)=>{
     err?console.log(err):console.log(`Started on ${PORT}`)
 })
 
-app.get('/',(req,res)=>{
-    res.send("Hell word");
-});
+
 app.get('/auth/me',checkAuth,UserController.getMe);
 app.post('/auth/reg',registerValidator,UserController.register);
 app.post('/auth/login',UserController.login);
-
-
+app.get('/api/user',checkAuth,checkAdmin,UserController.getUsers);
+app.patch('/api/user',checkAuth,checkAdmin,UserController.editUser);
+app.delete('/api/user/:id',checkAuth,checkAdmin,UserController.deleteUser);
 
 app.post('/api/worker',checkAuth,workerValidator,WorkerController.create);
 app.get('/api/worker',checkAuth,workerValidator,WorkerController.getWorkerByUser);
+app.get('/api/worker/all',checkAuth,workerValidator,WorkerController.getAllWorker);
+app.get('/api/worker/:id',checkAuth,WorkerController.getWorkerById);
+app.delete('/api/worker/:id',checkAuth,WorkerController.deleteById);
+app.patch('/api/worker/',checkAuth,WorkerController.editWorkerById);
+
 
 app.post('/api/storage',checkAuth,StorageController.create);
 app.put('/api/storage/:id',checkAuth,StorageController.addProductById);
-app.patch('/api/storage/:id',StorageController.updateStorageById);
-app.get('/api/storage/:id',StorageController.getStorageById);
+app.patch('/api/storage/:id',checkAuth,StorageController.updateStorageById);
+app.get('/api/storage/:id',checkAuth,StorageController.getStorageById);
 app.post('/api/storage/delete-item/:id',StorageController.deleteStorageById);
 
-app.get('/api/building',BuildingController.getBuildings);
-app.post('/api/building',checkAuth,BuildingController.create);
+app.get('/api/building',checkAuth,BuildingController.getBuildings);
+app.post('/api/building',checkAuth,checkAuth,BuildingController.create);
 app.post('/api/building/:id',checkAuth,BuildingController.getWorkersWasByDate);
-app.patch('/api/building/:id',BuildingController.updateWorkerWasByDate);
-app.get('/api/building/storage/:id',BuildingController.getBuildingbyStorageId);
+app.patch('/api/building/:id',checkAuth,BuildingController.updateWorkerWasByDate);
+app.get('/api/building/storage/:id',checkAuth,BuildingController.getBuildingbyStorageId);
+app.delete('/api/building/:id',checkAuth,BuildingController.deleteBuilding);
 
 
-app.post('/api/delivery',DeliveryController.create);
-app.get('/api/delivery/:id',DeliveryController.getDeliveryByObject);
-app.get('/api/delivery',DeliveryController.getDeliveryAll);
+app.post('/api/delivery',checkAuth,DeliveryController.create);
+app.get('/api/delivery/:id',checkAuth,DeliveryController.getDeliveryByObject);
+app.get('/api/delivery',checkAuth,DeliveryController.getDeliveryAll);
 app.patch('/api/delivery/start/:id',checkAuth,DeliveryController.startDelivery);
-app.patch('/api/delivery/finish/:id',DeliveryController.finishDelivery);
+app.patch('/api/delivery/finish/:id',checkAuth,DeliveryController.finishDelivery);
 
 
 

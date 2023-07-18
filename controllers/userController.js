@@ -95,14 +95,17 @@ export const getMe =async (req,res)=>{
     };
     export const getUsers =async (req,res)=>{
         try {
-            const user = await UserModel.find();
+            const user = await UserModel.find().populate('access').exec();
+            // console.log(user)
             if (!user){
                 return res.status(404).json({
-                   msg:"Пользователь не найден"
+                   msg:"Пользователи не найдены"
                 })
             }
-            const userData = user._doc
-            res.json(userData)
+            const filteredUsers = user.filter((user)=>{
+                return (user.role=='Пользователь' || user.role=='Доставщик')
+            })
+            res.json(filteredUsers)
         } catch (error) {
             console.log(error)
             res.status(500).json({
@@ -110,4 +113,52 @@ export const getMe =async (req,res)=>{
             })
         }
         };
-    
+        export const editUser =async (req,res)=>{
+            try {
+                const errors = validationResult(req);
+                if (!errors.isEmpty()){
+                    return res.status(400).json(errors.array())
+                }
+                const user = await UserModel.findOneAndUpdate(
+                    {
+                        _id:req.body.id
+                    },
+                    {   
+                        name:req.body.name,
+                        surname:req.body.surname,
+                        access:req.body.access,
+                    },
+                    {
+                        returnDocument:"after"
+                    })
+        
+        
+                res.json({
+                    msg:'success'
+                })
+        
+            
+            } catch (error) {
+                console.log(error)
+                res.status(500).json({
+                    msg:"Не удалось изменить пользователя",
+                })
+            }
+        };
+        export const deleteUser =async (req,res)=>{
+            try {
+                const user = await UserModel.deleteOne({
+                    _id:req.params.id
+                })
+                res.json({
+                    msg:'success'
+                })
+        
+            
+            } catch (error) {
+                console.log(error)
+                res.status(500).json({
+                    msg:"Не удалось удалить пользователя",
+                })
+            }
+        };

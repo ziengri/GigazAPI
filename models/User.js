@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
         required:true
     },
     role:{
-        type:[String],
+        type:String,
         required:true
     },
     access:{

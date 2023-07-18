@@ -164,3 +164,29 @@ export const updateWorkerWasByDate =async (req,res)=>{
     }
 };
 
+export const deleteBuilding =async (req,res)=>{
+    try {
+        await BuildingModel.deleteOne(
+            {
+                _id:req.params.id,
+            })
+            .then((doc)=>{
+                if(!doc){
+                    console.log(error)
+                    return res.status(500).json({
+                        msg:"Не удалось найти объект!",
+                    })
+                }
+                return res.json(doc)
+            })
+            .catch((error)=>{
+                console.log(error)
+                return res.status(500).json({
+                    msg:"Не удалось удалить объект!",
+                })
+            });
+       
+    } catch (error) {
+       
+    }
+};

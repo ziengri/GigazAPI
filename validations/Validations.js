@@ -6,7 +6,7 @@ export const registerValidator =[
     body('surname').isLength({min:4}),
     body('login').isLength({min:5}),
     body('access','Не выбраны доступы к обьектам').notEmpty().isArray(),
-    body('role','Не выбраны роли').notEmpty().isArray(),
+    body('role','Не выбраны роли').notEmpty(),
 ]
 
 export const workerValidator =[
